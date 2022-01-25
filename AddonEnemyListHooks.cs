@@ -98,7 +98,7 @@ namespace EnemyListDebuffs
                         return;
                 }
 
-                var numArray = Framework.Instance()->GetUiModule()->RaptureAtkModule.AtkModule.AtkArrayDataHolder
+                var numArray = Framework.Instance()->GetUiModule()->GetRaptureAtkModule()->AtkModule.AtkArrayDataHolder
                     .NumberArrays[19];
 
                 for (var i = 0; i < thisPtr->EnemyCount; i++)
