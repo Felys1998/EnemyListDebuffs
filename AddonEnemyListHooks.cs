@@ -37,9 +37,9 @@ namespace EnemyListDebuffs
         public void Dispose()
         {
             hookAddonEnemyListFinalize.Dispose();
-            var vtblFuncAddr = _plugin.Address.AddonEnemyListVTBLAddress + 40 * IntPtr.Size;
+            var vtblFuncAddr = _plugin.Address.AddonEnemyListVTBLAddress + 41 * IntPtr.Size;
             MemoryHelper.ChangePermission(vtblFuncAddr, 8, MemoryProtection.ReadWrite, out var oldProtect);
-            SafeMemory.Write(_plugin.Address.AddonEnemyListVTBLAddress + 40 * IntPtr.Size, OrigEnemyListDrawFuncPtr);
+            SafeMemory.Write(_plugin.Address.AddonEnemyListVTBLAddress + 41 * IntPtr.Size, OrigEnemyListDrawFuncPtr);
             MemoryHelper.ChangePermission(vtblFuncAddr, 8, oldProtect, out oldProtect);
         }
         
@@ -49,7 +49,7 @@ namespace EnemyListDebuffs
                 new Hook<AddonEnemyListFinalizePrototype>(_plugin.Address.AddonEnemyListFinalizeAddress,
                     AddonEnemyListFinalizeDetour);
 
-            OrigEnemyListDrawFuncPtr = Marshal.ReadIntPtr(_plugin.Address.AddonEnemyListVTBLAddress, 40 * IntPtr.Size);
+            OrigEnemyListDrawFuncPtr = Marshal.ReadIntPtr(_plugin.Address.AddonEnemyListVTBLAddress, 41 * IntPtr.Size);
             OrigDrawFunc = Marshal.GetDelegateForFunctionPointer<AddonEnemyListDrawPrototype>(OrigEnemyListDrawFuncPtr);
 
             PluginLog.Log($"{OrigEnemyListDrawFuncPtr.ToInt64():X}");
@@ -57,7 +57,7 @@ namespace EnemyListDebuffs
             ReplaceDrawFunc = AddonEnemyListDrawDetour;
             var replaceDrawFuncPtr = Marshal.GetFunctionPointerForDelegate(ReplaceDrawFunc);
 
-            var vtblFuncAddr = _plugin.Address.AddonEnemyListVTBLAddress + 40 * IntPtr.Size;
+            var vtblFuncAddr = _plugin.Address.AddonEnemyListVTBLAddress + 41 * IntPtr.Size;
             MemoryHelper.ChangePermission(vtblFuncAddr, 8, MemoryProtection.ReadWrite, out var oldProtect);
             SafeMemory.Write(vtblFuncAddr, replaceDrawFuncPtr);
             MemoryHelper.ChangePermission(vtblFuncAddr, 8, oldProtect, out oldProtect);
