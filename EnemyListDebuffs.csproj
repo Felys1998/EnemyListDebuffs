@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <PackageId>EnemyListDebuffs</PackageId>
-    <Version>0.3.1.0</Version>
+    <Version>0.3.2.0</Version>
     <Authors>Felys,aers</Authors>
     <Company>-</Company>
     <Description>Dalamud plugin that shows debuffs on the Enemy List.</Description>
@@ -45,12 +45,12 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <DalamudLibPath>$(AppData)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
+    <DalamudLibPath>$(AppData)\XIVLauncher\addon\Hooks\2f5ac56\</DalamudLibPath>
     <ClientStructsLibPath>E:\xiv-dev\FFXIVClientStructs\bin\$(Configuration)\</ClientStructsLibPath>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DalamudPackager" Version="2.1.5" />
+    <PackageReference Include="DalamudPackager" Version="2.1.6" />
     <PackageReference Include="ILRepack" Version="2.0.18" />
   </ItemGroup>
 
