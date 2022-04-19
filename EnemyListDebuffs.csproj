@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <PackageId>EnemyListDebuffs</PackageId>
-    <Version>0.3.3.0</Version>
+    <Version>0.3.4.0</Version>
     <Authors>Felys,aers</Authors>
     <Company>-</Company>
     <Description>Dalamud plugin that shows debuffs on the Enemy List.</Description>
@@ -45,13 +45,12 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <DalamudLibPath>$(AppData)\XIVLauncher\addon\Hooks\2f5ac56\</DalamudLibPath>
+    <DalamudLibPath>$(AppData)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
     <ClientStructsLibPath>E:\xiv-dev\FFXIVClientStructs\bin\$(Configuration)\</ClientStructsLibPath>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="DalamudPackager" Version="2.1.6" />
-    <PackageReference Include="ILRepack" Version="2.0.18" />
   </ItemGroup>
 
   <ItemGroup>
@@ -76,21 +75,6 @@
       <Private>False</Private>
     </Reference>
   </ItemGroup>
-
-  <Target Name="ILRepack" AfterTargets="Build">
-    <ItemGroup>
-      <InputAssemblies Include="$(TargetPath)" />
-      <InputAssemblies Include="$(TargetDir)*.dll" Exclude="$(TargetPath)" />
-    </ItemGroup>
-    <Exec Command="$(PkgILRepack)\tools\ILRepack.exe /lib:$(DalamudLibPath) /out:$(TargetDir)$(TargetFileName) @(InputAssemblies, ' ')" />
-  </Target>
-
-  <Target Name="LivePluginLoadCopy" AfterTargets="CleanOutDir" Condition=" '$(Configuration)' == 'Debug' ">
-    <Message Text="Copying for LPL" Importance="high" />
-    <Exec Command="if not exist $(TargetDir)LPL ( mkdir $(TargetDir)LPL )" />
-    <Exec Command="copy $(TargetPath) $(TargetDir)LPL\$(TargetFileName)" />
-    <Exec Command="copy $(TargetDir)*.pdb $(TargetDir)LPL\" />
-  </Target>
 
   <Target Name="CleanOutDir" AfterTargets="ILRepack">
     <ItemGroup>
