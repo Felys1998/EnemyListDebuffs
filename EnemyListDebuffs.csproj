@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <PackageId>EnemyListDebuffs</PackageId>
-    <Version>0.3.4.0</Version>
+    <Version>0.3.4.1</Version>
     <Authors>Felys,aers</Authors>
     <Company>-</Company>
     <Description>Dalamud plugin that shows debuffs on the Enemy List.</Description>
