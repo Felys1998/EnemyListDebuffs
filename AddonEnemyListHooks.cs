@@ -15,7 +15,7 @@ namespace EnemyListDebuffs
 {
     public unsafe class AddonEnemyListHooks : IDisposable
     {
-        private const int DRAW_VTBL_OFFSET = 41;
+        private readonly int DRAW_VTBL_OFFSET = 41 * IntPtr.Size;
         private readonly EnemyListDebuffsPlugin _plugin;
 
         private readonly Stopwatch Timer;
@@ -38,9 +38,9 @@ namespace EnemyListDebuffs
         public void Dispose()
         {
             hookAddonEnemyListFinalize.Dispose();
-            var vtblFuncAddr = _plugin.Address.AddonEnemyListVTBLAddress + DRAW_VTBL_OFFSET * IntPtr.Size;
+            var vtblFuncAddr = _plugin.Address.AddonEnemyListVTBLAddress + DRAW_VTBL_OFFSET;
             MemoryHelper.ChangePermission(vtblFuncAddr, 8, MemoryProtection.ReadWrite, out var oldProtect);
-            SafeMemory.Write(_plugin.Address.AddonEnemyListVTBLAddress + DRAW_VTBL_OFFSET * IntPtr.Size, OrigEnemyListDrawFuncPtr);
+            SafeMemory.Write(_plugin.Address.AddonEnemyListVTBLAddress + DRAW_VTBL_OFFSET, OrigEnemyListDrawFuncPtr);
             MemoryHelper.ChangePermission(vtblFuncAddr, 8, oldProtect, out oldProtect);
         }
         
@@ -50,7 +50,7 @@ namespace EnemyListDebuffs
                 new Hook<AddonEnemyListFinalizePrototype>(_plugin.Address.AddonEnemyListFinalizeAddress,
                     AddonEnemyListFinalizeDetour);
 
-            OrigEnemyListDrawFuncPtr = Marshal.ReadIntPtr(_plugin.Address.AddonEnemyListVTBLAddress, DRAW_VTBL_OFFSET * IntPtr.Size);
+            OrigEnemyListDrawFuncPtr = Marshal.ReadIntPtr(_plugin.Address.AddonEnemyListVTBLAddress, DRAW_VTBL_OFFSET);
             OrigDrawFunc = Marshal.GetDelegateForFunctionPointer<AddonEnemyListDrawPrototype>(OrigEnemyListDrawFuncPtr);
 
             PluginLog.Log($"{OrigEnemyListDrawFuncPtr.ToInt64():X}");
@@ -58,7 +58,7 @@ namespace EnemyListDebuffs
             ReplaceDrawFunc = AddonEnemyListDrawDetour;
             var replaceDrawFuncPtr = Marshal.GetFunctionPointerForDelegate(ReplaceDrawFunc);
 
-            var vtblFuncAddr = _plugin.Address.AddonEnemyListVTBLAddress + DRAW_VTBL_OFFSET * IntPtr.Size;
+            var vtblFuncAddr = _plugin.Address.AddonEnemyListVTBLAddress + DRAW_VTBL_OFFSET;
             MemoryHelper.ChangePermission(vtblFuncAddr, 8, MemoryProtection.ReadWrite, out var oldProtect);
             SafeMemory.Write(vtblFuncAddr, replaceDrawFuncPtr);
             MemoryHelper.ChangePermission(vtblFuncAddr, 8, oldProtect, out oldProtect);
