@@ -50,8 +50,6 @@ namespace EnemyListDebuffs
             Config = pluginInterface.GetPluginConfig() as EnemyListDebuffsPluginConfig ?? new EnemyListDebuffsPluginConfig();
             Config.Initialize(pluginInterface);
 
-            if (!FFXIVClientStructs.Resolver.Initialized) FFXIVClientStructs.Resolver.Initialize();
-
             Address = new PluginAddressResolver();
             Address.Setup();
 
