@@ -1,6 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnemyListDebuffs", "EnemyListDebuffs.csproj", "{EC12AC9F-9771-4381-A49F-11C0D9E88960}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32407.343
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EnemyListDebuffs", "EnemyListDebuffs.csproj", "{EC12AC9F-9771-4381-A49F-11C0D9E88960}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -8,9 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{EC12AC9F-9771-4381-A49F-11C0D9E88960}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EC12AC9F-9771-4381-A49F-11C0D9E88960}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EC12AC9F-9771-4381-A49F-11C0D9E88960}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EC12AC9F-9771-4381-A49F-11C0D9E88960}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC12AC9F-9771-4381-A49F-11C0D9E88960}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{EC12AC9F-9771-4381-A49F-11C0D9E88960}.Debug|Any CPU.Build.0 = Debug|x64
+		{EC12AC9F-9771-4381-A49F-11C0D9E88960}.Release|Any CPU.ActiveCfg = Release|x64
+		{EC12AC9F-9771-4381-A49F-11C0D9E88960}.Release|Any CPU.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {64A02EA6-F938-413E-8484-36B19F58BB5A}
 	EndGlobalSection
 EndGlobal

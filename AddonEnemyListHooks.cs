@@ -46,10 +46,9 @@ namespace EnemyListDebuffs
         
         public void Initialize()
         {
-            hookAddonEnemyListFinalize =
-                new Hook<AddonEnemyListFinalizePrototype>(_plugin.Address.AddonEnemyListFinalizeAddress,
-                    AddonEnemyListFinalizeDetour);
-
+            hookAddonEnemyListFinalize = Hook<AddonEnemyListFinalizePrototype>
+                .FromAddress(_plugin.Address.AddonEnemyListFinalizeAddress, AddonEnemyListFinalizeDetour);
+                
             OrigEnemyListDrawFuncPtr = Marshal.ReadIntPtr(_plugin.Address.AddonEnemyListVTBLAddress, DRAW_VTBL_OFFSET);
             OrigDrawFunc = Marshal.GetDelegateForFunctionPointer<AddonEnemyListDrawPrototype>(OrigEnemyListDrawFuncPtr);
 
