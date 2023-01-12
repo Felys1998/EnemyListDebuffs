@@ -1,6 +1,7 @@
 {
-    "Name": "EnemyListDebuffs",
-    "Author": "Felys",
-    "Description": "Displays your debuffs on the enemy list. Original implementation credit to aers.",
-    "RepoUrl": "https://github.com/Felys1998/EnemyListDebuffs"
+  "Name": "EnemyListDebuffs",
+  "Author": "Felys",
+  "Description": "Displays your debuffs on the enemy list. Original implementation credit to aers.",
+  "RepoUrl": "https://github.com/Felys1998/EnemyListDebuffs",
+  "Punchline": "Because tracking your DoTs shouldn't be difficult."
 }

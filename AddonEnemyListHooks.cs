@@ -46,10 +46,9 @@ namespace EnemyListDebuffs
         
         public void Initialize()
         {
-            hookAddonEnemyListFinalize =
-                new Hook<AddonEnemyListFinalizePrototype>(_plugin.Address.AddonEnemyListFinalizeAddress,
-                    AddonEnemyListFinalizeDetour);
-
+            hookAddonEnemyListFinalize = Hook<AddonEnemyListFinalizePrototype>
+                .FromAddress(_plugin.Address.AddonEnemyListFinalizeAddress, AddonEnemyListFinalizeDetour);
+                
             OrigEnemyListDrawFuncPtr = Marshal.ReadIntPtr(_plugin.Address.AddonEnemyListVTBLAddress, DRAW_VTBL_OFFSET);
             OrigDrawFunc = Marshal.GetDelegateForFunctionPointer<AddonEnemyListDrawPrototype>(OrigEnemyListDrawFuncPtr);
 
@@ -100,7 +99,7 @@ namespace EnemyListDebuffs
                 }
 
                 var numArray = Framework.Instance()->GetUiModule()->GetRaptureAtkModule()->AtkModule.AtkArrayDataHolder
-                    .NumberArrays[19];
+                    .NumberArrays[21];
 
                 for (var i = 0; i < thisPtr->EnemyCount; i++)
                     if (_plugin.UI.IsConfigOpen)
