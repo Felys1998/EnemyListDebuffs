@@ -15,7 +15,7 @@ namespace EnemyListDebuffs
 {
     public unsafe class AddonEnemyListHooks : IDisposable
     {
-        private readonly int DRAW_VTBL_OFFSET = 41 * IntPtr.Size;
+        private readonly int DRAW_VTBL_OFFSET = 42 * IntPtr.Size;
         private readonly EnemyListDebuffsPlugin _plugin;
 
         private readonly Stopwatch Timer;
