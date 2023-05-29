@@ -81,7 +81,7 @@ namespace EnemyListDebuffs.StatusNode
 
             var row = StatusSheet.GetRow((uint) id);
             
-            group.SetStatus(statusIndex, row.Icon, timer);
+            group.SetStatus(statusIndex, (int) row.Icon, timer);
         }
 
         public void HideUnusedStatus(int groupIndex, int statusCount)
