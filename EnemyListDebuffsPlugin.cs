@@ -1,15 +1,9 @@
 ﻿using Dalamud.Game.Command;
 using Dalamud.Plugin;
 using Lumina.Excel.GeneratedSheets;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dalamud.Data;
 using Dalamud.Game;
-using Dalamud.Game.ClientState;
-using Dalamud.Logging;
+using Dalamud.Plugin.Services;
 using EnemyListDebuffs.StatusNode;
 
 namespace EnemyListDebuffs
@@ -17,28 +11,34 @@ namespace EnemyListDebuffs
     public class EnemyListDebuffsPlugin : IDalamudPlugin
     {
         public string Name => "EnemyListDebuffs";
-        
-        public ClientState ClientState { get; private set; } = null!;
-        public static CommandManager CommandManager { get; private set; } = null!;
+
+        public IClientState ClientState { get; private set; } = null!;
+        public static ICommandManager CommandManager { get; private set; } = null!;
         public DalamudPluginInterface Interface { get; private set; } = null!;
-        public DataManager DataManager { get; private set; } = null!;
-        public Framework Framework { get; private set; } = null!;
+        public IDataManager DataManager { get; private set; } = null!;
+        public IFramework Framework { get; private set; } = null!;
         public PluginAddressResolver Address { get; private set; } = null!;
         public StatusNodeManager StatusNodeManager { get; private set; } = null!;
-        public static SigScanner SigScanner { get; private set; } = null!;
+        public static ISigScanner SigScanner { get; private set; } = null!;
         public static AddonEnemyListHooks Hooks { get; private set; } = null!;
         public EnemyListDebuffsPluginUI UI { get; private set; } = null!;
         public EnemyListDebuffsPluginConfig Config { get; private set; } = null!;
+        public IGameInteropProvider GameInteropProvider { get; private set; } = null!;
+        public IAddonLifecycle AddonLifecycle { get; private set; } = null!;
+        public IPluginLog PluginLog { get; private set; } = null!;
 
-        internal bool InPvp;
+    internal bool InPvp;
 
         public EnemyListDebuffsPlugin(
-            ClientState clientState,
-            CommandManager commandManager, 
+            IClientState clientState,
+            ICommandManager commandManager, 
             DalamudPluginInterface pluginInterface, 
-            DataManager dataManager,
-            Framework framework, 
-            SigScanner sigScanner)
+            IDataManager dataManager,
+            IFramework framework, 
+            ISigScanner sigScanner,
+            IGameInteropProvider gameInteropProvider,
+            IAddonLifecycle addonLifecycle,
+            IPluginLog pluginLog)
         {
             ClientState = clientState;
             CommandManager = commandManager;
@@ -46,12 +46,15 @@ namespace EnemyListDebuffs
             Interface = pluginInterface;
             Framework = framework;
             SigScanner = sigScanner;
+            GameInteropProvider = gameInteropProvider;
+            AddonLifecycle = addonLifecycle;
+            PluginLog = pluginLog;
 
             Config = pluginInterface.GetPluginConfig() as EnemyListDebuffsPluginConfig ?? new EnemyListDebuffsPluginConfig();
             Config.Initialize(pluginInterface);
 
             Address = new PluginAddressResolver();
-            Address.Setup();
+            Address.Setup(sigScanner);
 
             StatusNodeManager = new StatusNodeManager(this);
 
@@ -77,7 +80,7 @@ namespace EnemyListDebuffs
             StatusNodeManager.Dispose();
         }
 
-        private void OnTerritoryChange(object sender, ushort e)
+        private void OnTerritoryChange(ushort e)
         {
             try
             {

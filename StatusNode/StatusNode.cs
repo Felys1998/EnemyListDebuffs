@@ -1,6 +1,4 @@
-﻿using Dalamud.Logging;
-using Dalamud.Plugin;
-using FFXIVClientStructs.FFXIV.Client.System.Memory;
+﻿using FFXIVClientStructs.FFXIV.Client.System.Memory;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace EnemyListDebuffs.StatusNode
@@ -12,12 +10,13 @@ namespace EnemyListDebuffs.StatusNode
         public AtkResNode* RootNode { get; private set; }
         public AtkImageNode* IconNode { get; private set; }
         public AtkTextNode* DurationNode { get; private set; }
+        
         public bool Visible { get; private set; }
 
         public static int DefaultIconId = 10205;
 
-        private int CurrentIconId = DefaultIconId;
-        private int CurrentTimer = 60;
+        private int _currentIconId = DefaultIconId;
+        private int _currentTimer = 60;
 
         public StatusNode(EnemyListDebuffsPlugin p)
         {
@@ -33,16 +32,16 @@ namespace EnemyListDebuffs.StatusNode
         {
             SetVisibility(true);
 
-            if (id != CurrentIconId)
+            if (id != _currentIconId)
             {
                 IconNode->LoadIconTexture(id, 0);
-                CurrentIconId = id;
+                _currentIconId = id;
             }
 
-            if (timer != CurrentTimer)
+            if (timer != _currentTimer)
             {
                 DurationNode->SetNumber(timer);
-                CurrentTimer = timer;
+                _currentTimer = timer;
             }
         }
 
@@ -150,14 +149,14 @@ namespace EnemyListDebuffs.StatusNode
             var newResNode = (AtkResNode*)IMemorySpace.GetUISpace()->Malloc((ulong)sizeof(AtkResNode), 8);
             if (newResNode == null)
             {
-                PluginLog.Debug("Failed to allocate memory for res node");
+                _plugin.PluginLog.Debug("Failed to allocate memory for res node");
                 return null;
             }
             IMemorySpace.Memset(newResNode, 0, (ulong)sizeof(AtkResNode));
             newResNode->Ctor();
 
             newResNode->Type = NodeType.Res;
-            newResNode->Flags = (short)(NodeFlags.AnchorLeft | NodeFlags.AnchorTop);
+            newResNode->NodeFlags = NodeFlags.AnchorLeft | NodeFlags.AnchorTop;
             newResNode->DrawFlags = 0;
 
             return newResNode;
@@ -168,14 +167,14 @@ namespace EnemyListDebuffs.StatusNode
             var newImageNode = (AtkImageNode*)IMemorySpace.GetUISpace()->Malloc((ulong)sizeof(AtkImageNode), 8);
             if (newImageNode == null)
             {
-                PluginLog.Debug("Failed to allocate memory for image node");
+                _plugin.PluginLog.Debug("Failed to allocate memory for image node");
                 return null;
             }
             IMemorySpace.Memset(newImageNode, 0, (ulong)sizeof(AtkImageNode));
             newImageNode->Ctor();
 
             newImageNode->AtkResNode.Type = NodeType.Image;
-            newImageNode->AtkResNode.Flags = (short)(NodeFlags.AnchorLeft | NodeFlags.AnchorTop);
+            newImageNode->AtkResNode.NodeFlags = NodeFlags.AnchorLeft | NodeFlags.AnchorTop;
             newImageNode->AtkResNode.DrawFlags = 0;
 
             newImageNode->WrapMode = 1;
@@ -184,7 +183,7 @@ namespace EnemyListDebuffs.StatusNode
             var partsList = (AtkUldPartsList*)IMemorySpace.GetUISpace()->Malloc((ulong)sizeof(AtkUldPartsList), 8);
             if (partsList == null)
             {
-                PluginLog.Debug("Failed to allocate memory for parts list");
+                _plugin.PluginLog.Debug("Failed to allocate memory for parts list");
                 newImageNode->AtkResNode.Destroy(true);
                 return null;
             }
@@ -195,7 +194,7 @@ namespace EnemyListDebuffs.StatusNode
             var part = (AtkUldPart*)IMemorySpace.GetUISpace()->Malloc((ulong)sizeof(AtkUldPart), 8);
             if (part == null)
             {
-                PluginLog.Debug("Failed to allocate memory for part");
+                _plugin.PluginLog.Debug("Failed to allocate memory for part");
                 IMemorySpace.Free(partsList, (ulong)sizeof(AtkUldPartsList));
                 newImageNode->AtkResNode.Destroy(true);
             }
@@ -210,7 +209,7 @@ namespace EnemyListDebuffs.StatusNode
             var asset = (AtkUldAsset*)IMemorySpace.GetUISpace()->Malloc((ulong)sizeof(AtkUldAsset), 8);
             if (asset == null)
             {
-                PluginLog.Log("Failed to allocate memory for asset");
+                _plugin.PluginLog.Debug("Failed to allocate memory for asset");
                 IMemorySpace.Free(part, (ulong)sizeof(AtkUldPart));
                 IMemorySpace.Free(partsList, (ulong)sizeof(AtkUldPartsList));
                 newImageNode->AtkResNode.Destroy(true);
@@ -233,14 +232,14 @@ namespace EnemyListDebuffs.StatusNode
             var newTextNode = (AtkTextNode*)IMemorySpace.GetUISpace()->Malloc((ulong)sizeof(AtkTextNode), 8);
             if (newTextNode == null)
             {
-                PluginLog.Debug("Failed to allocate memory for text node");
+                _plugin.PluginLog.Debug("Failed to allocate memory for text node");
                 return null;
             }
             IMemorySpace.Memset(newTextNode, 0, (ulong)sizeof(AtkTextNode));
             newTextNode->Ctor();
 
             newTextNode->AtkResNode.Type = NodeType.Text;
-            newTextNode->AtkResNode.Flags = (short)(NodeFlags.AnchorLeft | NodeFlags.AnchorTop);
+            newTextNode->AtkResNode.NodeFlags = NodeFlags.AnchorLeft | NodeFlags.AnchorTop;
             newTextNode->AtkResNode.DrawFlags = 12;
             newTextNode->AtkResNode.SetWidth(24);
             newTextNode->AtkResNode.SetHeight(17);

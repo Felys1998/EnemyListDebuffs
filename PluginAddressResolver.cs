@@ -10,7 +10,7 @@ using Dalamud.Logging;
 
 namespace EnemyListDebuffs
 {
-    public class PluginAddressResolver : BaseAddressResolver
+    public class PluginAddressResolver
     {
         public IntPtr AddonEnemyListFinalizeAddress { get; private set;  }
 
@@ -20,7 +20,7 @@ namespace EnemyListDebuffs
 
         private const string AddonEnemyListVTBLSignature = "48 8D 05 ?? ?? ?? ?? C7 83 ?? ?? ?? ?? ?? ?? ?? ?? 33 D2";
 
-        protected override void Setup64Bit(SigScanner scanner)
+        public void Setup(ISigScanner scanner)
         {
             AddonEnemyListFinalizeAddress = scanner.ScanText(AddonEnemyListFinalizeSignature);
             AddonEnemyListVTBLAddress = scanner.GetStaticAddressFromSig(AddonEnemyListVTBLSignature);

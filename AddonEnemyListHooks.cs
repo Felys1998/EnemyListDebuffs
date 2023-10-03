@@ -3,9 +3,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Dalamud;
 using Dalamud.Hooking;
-using Dalamud.Logging;
 using Dalamud.Memory;
-using Dalamud.Plugin;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
@@ -15,65 +13,65 @@ namespace EnemyListDebuffs
 {
     public unsafe class AddonEnemyListHooks : IDisposable
     {
-        private readonly int DRAW_VTBL_OFFSET = 42 * IntPtr.Size;
+        private readonly int _drawVtblOffset = 43 * IntPtr.Size;
         private readonly EnemyListDebuffsPlugin _plugin;
 
-        private readonly Stopwatch Timer;
-        private long Elapsed;
-        private Hook<AddonEnemyListFinalizePrototype> hookAddonEnemyListFinalize;
+        private readonly Stopwatch _timer;
+        private long _elapsed;
+        private Hook<AddonEnemyListFinalizePrototype> _hookAddonEnemyListFinalize;
 
-        private AddonEnemyListDrawPrototype OrigDrawFunc;
+        private AddonEnemyListDrawPrototype _origDrawFunc;
 
-        private IntPtr OrigEnemyListDrawFuncPtr;
-        private AddonEnemyListDrawPrototype ReplaceDrawFunc;
+        private IntPtr _origEnemyListDrawFuncPtr;
+        private AddonEnemyListDrawPrototype _replaceDrawFunc;
 
         public AddonEnemyListHooks(EnemyListDebuffsPlugin p)
         {
             _plugin = p;
 
-            Timer = new Stopwatch();
-            Elapsed = 0;
+            _timer = new Stopwatch();
+            _elapsed = 0;
         }
 
         public void Dispose()
         {
-            hookAddonEnemyListFinalize.Dispose();
-            var vtblFuncAddr = _plugin.Address.AddonEnemyListVTBLAddress + DRAW_VTBL_OFFSET;
+            _hookAddonEnemyListFinalize.Dispose();
+            var vtblFuncAddr = _plugin.Address.AddonEnemyListVTBLAddress + _drawVtblOffset;
             MemoryHelper.ChangePermission(vtblFuncAddr, 8, MemoryProtection.ReadWrite, out var oldProtect);
-            SafeMemory.Write(_plugin.Address.AddonEnemyListVTBLAddress + DRAW_VTBL_OFFSET, OrigEnemyListDrawFuncPtr);
+            SafeMemory.Write(_plugin.Address.AddonEnemyListVTBLAddress + _drawVtblOffset, _origEnemyListDrawFuncPtr);
             MemoryHelper.ChangePermission(vtblFuncAddr, 8, oldProtect, out oldProtect);
         }
         
         public void Initialize()
         {
-            hookAddonEnemyListFinalize = Hook<AddonEnemyListFinalizePrototype>
-                .FromAddress(_plugin.Address.AddonEnemyListFinalizeAddress, AddonEnemyListFinalizeDetour);
-                
-            OrigEnemyListDrawFuncPtr = Marshal.ReadIntPtr(_plugin.Address.AddonEnemyListVTBLAddress, DRAW_VTBL_OFFSET);
-            OrigDrawFunc = Marshal.GetDelegateForFunctionPointer<AddonEnemyListDrawPrototype>(OrigEnemyListDrawFuncPtr);
+            _hookAddonEnemyListFinalize = _plugin.GameInteropProvider.HookFromAddress<AddonEnemyListFinalizePrototype>
+                (_plugin.Address.AddonEnemyListFinalizeAddress, AddonEnemyListFinalizeDetour);
+            
+            _origEnemyListDrawFuncPtr = Marshal.ReadIntPtr(_plugin.Address.AddonEnemyListVTBLAddress, _drawVtblOffset);
+            _origDrawFunc = Marshal.GetDelegateForFunctionPointer<AddonEnemyListDrawPrototype>(_origEnemyListDrawFuncPtr);
 
-            PluginLog.Log($"{OrigEnemyListDrawFuncPtr.ToInt64():X}");
+            _plugin.PluginLog.Debug($"{_origEnemyListDrawFuncPtr.ToInt64():X}");
 
-            ReplaceDrawFunc = AddonEnemyListDrawDetour;
-            var replaceDrawFuncPtr = Marshal.GetFunctionPointerForDelegate(ReplaceDrawFunc);
+            _replaceDrawFunc = AddonEnemyListDrawDetour;
+            var replaceDrawFuncPtr = Marshal.GetFunctionPointerForDelegate(_replaceDrawFunc);
 
-            var vtblFuncAddr = _plugin.Address.AddonEnemyListVTBLAddress + DRAW_VTBL_OFFSET;
+            var vtblFuncAddr = _plugin.Address.AddonEnemyListVTBLAddress + _drawVtblOffset;
             MemoryHelper.ChangePermission(vtblFuncAddr, 8, MemoryProtection.ReadWrite, out var oldProtect);
             SafeMemory.Write(vtblFuncAddr, replaceDrawFuncPtr);
             MemoryHelper.ChangePermission(vtblFuncAddr, 8, oldProtect, out oldProtect);
 
-            hookAddonEnemyListFinalize.Enable();
+            _hookAddonEnemyListFinalize.Enable();
         }
 
         public void AddonEnemyListDrawDetour(AddonEnemyList* thisPtr)
         {
             if (!_plugin.Config.Enabled || _plugin.InPvp)
             {
-                if (Timer.IsRunning)
+                if (_timer.IsRunning)
                 {
-                    Timer.Stop();
-                    Timer.Reset();
-                    Elapsed = 0;
+                    _timer.Stop();
+                    _timer.Reset();
+                    _elapsed = 0;
                 }
 
                 if (_plugin.StatusNodeManager.Built)
@@ -82,14 +80,14 @@ namespace EnemyListDebuffs
                     _plugin.StatusNodeManager.SetEnemyListAddonPointer(null);
                 }
 
-                OrigDrawFunc(thisPtr);
+                _origDrawFunc(thisPtr);
                 return;
             }
 
-            Elapsed += Timer.ElapsedMilliseconds;
-            Timer.Restart();
+            _elapsed += _timer.ElapsedMilliseconds;
+            _timer.Restart();
 
-            if (Elapsed >= _plugin.Config.UpdateInterval)
+            if (_elapsed >= _plugin.Config.UpdateInterval)
             {
                 if (!_plugin.StatusNodeManager.Built)
                 {
@@ -117,13 +115,13 @@ namespace EnemyListDebuffs
                         }
 
                         var enemyObjectId = numArray->IntArray[8 + i * 6];
-                        var enemyChara = CharacterManager.Instance()->LookupBattleCharaByObjectId(enemyObjectId);
+                        var enemyChara = CharacterManager.Instance()->LookupBattleCharaByObjectId((uint)enemyObjectId);
 
                         if (enemyChara is null) continue;
 
-                        var targetStatus = enemyChara->StatusManager;
+                        var targetStatus = enemyChara->GetStatusManager;
 
-                        var statusArray = (Status*)targetStatus.Status;
+                        var statusArray = (Status*)targetStatus->Status;
 
                         var count = 0;
 
@@ -143,17 +141,17 @@ namespace EnemyListDebuffs
                         _plugin.StatusNodeManager.HideUnusedStatus(i, count);
                     }
 
-                Elapsed = 0;
+                _elapsed = 0;
             }
 
-            OrigDrawFunc(thisPtr);
+            _origDrawFunc(thisPtr);
         }
 
         public void AddonEnemyListFinalizeDetour(AddonEnemyList* thisPtr)
         {
             _plugin.StatusNodeManager.DestroyNodes();
             _plugin.StatusNodeManager.SetEnemyListAddonPointer(null);
-            hookAddonEnemyListFinalize.Original(thisPtr);
+            _hookAddonEnemyListFinalize.Original(thisPtr);
         }
 
         private delegate void AddonEnemyListFinalizePrototype(AddonEnemyList* thisPtr);
