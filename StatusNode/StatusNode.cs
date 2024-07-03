@@ -13,9 +13,9 @@ namespace EnemyListDebuffs.StatusNode
         
         public bool Visible { get; private set; }
 
-        public static int DefaultIconId = 10205;
+        public static uint DefaultIconId = 10205;
 
-        private int _currentIconId = DefaultIconId;
+        private uint _currentIconId = DefaultIconId;
         private int _currentTimer = 60;
 
         public StatusNode(EnemyListDebuffsPlugin p)
@@ -28,7 +28,7 @@ namespace EnemyListDebuffs.StatusNode
             RootNode->ToggleVisibility(enable);
         }
 
-        public void SetStatus(int id, int timer)
+        public void SetStatus(uint id, int timer)
         {
             SetVisibility(true);
 
@@ -103,15 +103,15 @@ namespace EnemyListDebuffs.StatusNode
             }
             DurationNode = durationNode;
 
-            RootNode->NodeID = baseNodeId;
+            RootNode->NodeId = baseNodeId;
             RootNode->ChildCount = 2;
             RootNode->ChildNode = (AtkResNode*) IconNode;
 
-            IconNode->AtkResNode.NodeID = baseNodeId + 1;
+            IconNode->AtkResNode.NodeId = baseNodeId + 1;
             IconNode->AtkResNode.ParentNode = RootNode;
             IconNode->AtkResNode.PrevSiblingNode = (AtkResNode*)DurationNode;
 
-            DurationNode->AtkResNode.NodeID = baseNodeId + 2;
+            DurationNode->AtkResNode.NodeId = baseNodeId + 2;
             DurationNode->AtkResNode.ParentNode = RootNode;
             DurationNode->AtkResNode.NextSiblingNode = (AtkResNode*)IconNode;
 
@@ -222,7 +222,7 @@ namespace EnemyListDebuffs.StatusNode
 
             newImageNode->PartsList = partsList;
 
-            newImageNode->LoadIconTexture(DefaultIconId, 0);
+            newImageNode->LoadIconTexture((uint)DefaultIconId, 0);
 
             return newImageNode;
         }

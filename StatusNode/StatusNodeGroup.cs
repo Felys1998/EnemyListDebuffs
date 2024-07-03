@@ -38,7 +38,7 @@ namespace EnemyListDebuffs.StatusNode
             var rootNode = CreateRootNode();
             if (rootNode == null) return false;
             RootNode = rootNode;
-            RootNode->NodeID = baseNodeId;
+            RootNode->NodeId = baseNodeId;
 
             for (uint i = 0; i < NodePerGroupCount; i++)
             {
@@ -116,7 +116,7 @@ namespace EnemyListDebuffs.StatusNode
             }
         }
         
-        public void SetStatus(int statusIndex, int id, int timer)
+        public void SetStatus(int statusIndex, uint id, int timer)
         {
             if (statusIndex > NodePerGroupCount)
                 return;

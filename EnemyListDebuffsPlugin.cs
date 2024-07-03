@@ -14,7 +14,7 @@ namespace EnemyListDebuffs
 
         public IClientState ClientState { get; private set; } = null!;
         public static ICommandManager CommandManager { get; private set; } = null!;
-        public DalamudPluginInterface Interface { get; private set; } = null!;
+        public IDalamudPluginInterface Interface { get; private set; } = null!;
         public IDataManager DataManager { get; private set; } = null!;
         public IFramework Framework { get; private set; } = null!;
         public PluginAddressResolver Address { get; private set; } = null!;
@@ -32,7 +32,7 @@ namespace EnemyListDebuffs
         public EnemyListDebuffsPlugin(
             IClientState clientState,
             ICommandManager commandManager, 
-            DalamudPluginInterface pluginInterface, 
+            IDalamudPluginInterface pluginInterface, 
             IDataManager dataManager,
             IFramework framework, 
             ISigScanner sigScanner,
@@ -53,7 +53,7 @@ namespace EnemyListDebuffs
             Config = pluginInterface.GetPluginConfig() as EnemyListDebuffsPluginConfig ?? new EnemyListDebuffsPluginConfig();
             Config.Initialize(pluginInterface);
 
-            Address = new PluginAddressResolver();
+            Address = new PluginAddressResolver(this);
             Address.Setup(sigScanner);
 
             StatusNodeManager = new StatusNodeManager(this);

@@ -96,18 +96,18 @@ namespace EnemyListDebuffs
                         return;
                 }
 
-                var numArray = Framework.Instance()->GetUiModule()->GetRaptureAtkModule()->AtkModule.AtkArrayDataHolder
+                var numArray = Framework.Instance()->GetUIModule()->GetRaptureAtkModule()->AtkModule.AtkArrayDataHolder
                     .NumberArrays[21];
 
                 for (var i = 0; i < thisPtr->EnemyCount; i++)
                     if (_plugin.UI.IsConfigOpen)
                     {
                         _plugin.StatusNodeManager.ForEachNode(node =>
-                            node.SetStatus(StatusNode.StatusNode.DefaultIconId, 20));
+                            node.SetStatus((uint) StatusNode.StatusNode.DefaultIconId, 20));
                     }
                     else
                     {
-                        var localPlayerId = _plugin.ClientState.LocalPlayer?.ObjectId;
+                        var localPlayerId = _plugin.ClientState.LocalPlayer?.GameObjectId;
                         if (localPlayerId is null)
                         {
                             _plugin.StatusNodeManager.HideUnusedStatus(i, 0);
@@ -115,23 +115,23 @@ namespace EnemyListDebuffs
                         }
 
                         var enemyObjectId = numArray->IntArray[8 + i * 6];
-                        var enemyChara = CharacterManager.Instance()->LookupBattleCharaByObjectId((uint)enemyObjectId);
+                        var enemyChara = CharacterManager.Instance()->LookupBattleCharaByEntityId((uint)enemyObjectId);
 
                         if (enemyChara is null) continue;
 
-                        var targetStatus = enemyChara->GetStatusManager;
+                        var targetStatus = enemyChara->GetStatusManager();
 
-                        var statusArray = (Status*)targetStatus->Status;
+                        var statusArray = targetStatus->Status;
 
                         var count = 0;
 
                         for (var j = 0; j < 30; j++)
                         {
-                            var status = statusArray[j];
-                            if (status.StatusID == 0) continue;
-                            if (status.SourceID != localPlayerId) continue;
+                            Status status = statusArray[j];
+                            if (status.StatusId == 0) continue;
+                            if (status.SourceId != localPlayerId) continue;
 
-                            _plugin.StatusNodeManager.SetStatus(i, count, status.StatusID, (int)status.RemainingTime);
+                            _plugin.StatusNodeManager.SetStatus(i, count, status.StatusId, (int)status.RemainingTime);
                             count++;
 
                             if (count == 4)
