@@ -46,9 +46,9 @@ namespace EnemyListDebuffs
             if (!ConfigOpen)
                 return;
 
-            ImGui.SetNextWindowSize(new Vector2(420, 647), ImGuiCond.Always);
+            ImGui.SetNextWindowSize(new Vector2(420, 647), ImGuiCond.FirstUseEver);
 
-            if (!ImGui.Begin(_plugin.Name, ref ConfigOpen, ImGuiWindowFlags.NoResize))
+            if (!ImGui.Begin(_plugin.Name, ref ConfigOpen, ImGuiWindowFlags.None))
             {
                 ImGui.End();
                 return;

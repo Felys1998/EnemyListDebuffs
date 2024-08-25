@@ -18,12 +18,12 @@ namespace EnemyListDebuffs
 
         private readonly Stopwatch _timer;
         private long _elapsed;
-        private Hook<AddonEnemyListFinalizePrototype> _hookAddonEnemyListFinalize;
+        private Hook<AddonEnemyList.Delegates.Finalizer> _hookAddonEnemyListFinalize;
 
-        private AddonEnemyListDrawPrototype _origDrawFunc;
+        private AddonEnemyList.Delegates.Draw _origDrawFunc;
 
         private IntPtr _origEnemyListDrawFuncPtr;
-        private AddonEnemyListDrawPrototype _replaceDrawFunc;
+        private AddonEnemyList.Delegates.Draw _replaceDrawFunc;
 
         public AddonEnemyListHooks(EnemyListDebuffsPlugin p)
         {
@@ -44,11 +44,11 @@ namespace EnemyListDebuffs
         
         public void Initialize()
         {
-            _hookAddonEnemyListFinalize = _plugin.GameInteropProvider.HookFromAddress<AddonEnemyListFinalizePrototype>
+            _hookAddonEnemyListFinalize = _plugin.GameInteropProvider.HookFromAddress<AddonEnemyList.Delegates.Finalizer>
                 (_plugin.Address.AddonEnemyListFinalizeAddress, AddonEnemyListFinalizeDetour);
             
             _origEnemyListDrawFuncPtr = Marshal.ReadIntPtr(_plugin.Address.AddonEnemyListVTBLAddress, _drawVtblOffset);
-            _origDrawFunc = Marshal.GetDelegateForFunctionPointer<AddonEnemyListDrawPrototype>(_origEnemyListDrawFuncPtr);
+            _origDrawFunc = Marshal.GetDelegateForFunctionPointer<AddonEnemyList.Delegates.Draw>(_origEnemyListDrawFuncPtr);
 
             _plugin.PluginLog.Debug($"{_origEnemyListDrawFuncPtr.ToInt64():X}");
 
@@ -153,9 +153,5 @@ namespace EnemyListDebuffs
             _plugin.StatusNodeManager.SetEnemyListAddonPointer(null);
             _hookAddonEnemyListFinalize.Original(thisPtr);
         }
-
-        private delegate void AddonEnemyListFinalizePrototype(AddonEnemyList* thisPtr);
-
-        private delegate void AddonEnemyListDrawPrototype(AddonEnemyList* thisPtr);
     }
 }
