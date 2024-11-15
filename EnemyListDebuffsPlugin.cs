@@ -1,6 +1,6 @@
 ﻿using Dalamud.Game.Command;
 using Dalamud.Plugin;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using System.Collections.Generic;
 using Dalamud.Game;
 using Dalamud.Plugin.Services;
@@ -84,8 +84,7 @@ namespace EnemyListDebuffs
         {
             try
             {
-                var territory = DataManager.GetExcelSheet<TerritoryType>()?.GetRow(e);
-                if (territory != null) InPvp = territory.IsPvpZone;
+                InPvp = DataManager.GetExcelSheet<TerritoryType>().GetRow(e).IsPvpZone;
             }
             catch (KeyNotFoundException)
             {

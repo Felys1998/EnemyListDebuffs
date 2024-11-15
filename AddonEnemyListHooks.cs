@@ -8,6 +8,7 @@ using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.UI;
+using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace EnemyListDebuffs
 {
@@ -96,14 +97,16 @@ namespace EnemyListDebuffs
                         return;
                 }
 
-                var numArray = Framework.Instance()->GetUIModule()->GetRaptureAtkModule()->AtkModule.AtkArrayDataHolder
-                    .NumberArrays[21];
+                var numArray = AtkStage.Instance()->GetNumberArrayData(NumberArrayType.EnemyList);
+
+                // var numArray = Framework.Instance()->GetUIModule()->GetRaptureAtkModule()->AtkModule.AtkArrayDataHolder
+                //     .NumberArrays[21];
 
                 for (var i = 0; i < thisPtr->EnemyCount; i++)
                     if (_plugin.UI.IsConfigOpen)
                     {
                         _plugin.StatusNodeManager.ForEachNode(node =>
-                            node.SetStatus((uint) StatusNode.StatusNode.DefaultIconId, 20));
+                            node.SetStatus(StatusNode.StatusNode.DefaultIconId, 20));
                     }
                     else
                     {

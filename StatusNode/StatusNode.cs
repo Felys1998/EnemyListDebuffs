@@ -3,25 +3,18 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace EnemyListDebuffs.StatusNode
 {
-    public unsafe class StatusNode
+    public unsafe class StatusNode(EnemyListDebuffsPlugin p)
     {
-        private EnemyListDebuffsPlugin _plugin;
-
         public AtkResNode* RootNode { get; private set; }
         public AtkImageNode* IconNode { get; private set; }
         public AtkTextNode* DurationNode { get; private set; }
         
         public bool Visible { get; private set; }
 
-        public static uint DefaultIconId = 10205;
+        public const uint DefaultIconId = 210205;
 
         private uint _currentIconId = DefaultIconId;
         private int _currentTimer = 60;
-
-        public StatusNode(EnemyListDebuffsPlugin p)
-        {
-            _plugin = p;
-        }
 
         public void SetVisibility(bool enable)
         {
@@ -49,32 +42,32 @@ namespace EnemyListDebuffs.StatusNode
         {
             if (!Built()) return;
 
-            IconNode->AtkResNode.SetPositionShort((short)_plugin.Config.IconX, (short)_plugin.Config.IconY);
-            IconNode->AtkResNode.SetHeight((ushort)_plugin.Config.IconHeight);
-            IconNode->AtkResNode.SetWidth((ushort)_plugin.Config.IconWidth);
-            DurationNode->AtkResNode.SetPositionShort((short)_plugin.Config.DurationX, (short)_plugin.Config.DurationY);
-            DurationNode->FontSize = (byte) _plugin.Config.FontSize;
+            IconNode->AtkResNode.SetPositionShort((short)p.Config.IconX, (short)p.Config.IconY);
+            IconNode->AtkResNode.SetHeight((ushort)p.Config.IconHeight);
+            IconNode->AtkResNode.SetWidth((ushort)p.Config.IconWidth);
+            DurationNode->AtkResNode.SetPositionShort((short)p.Config.DurationX, (short)p.Config.DurationY);
+            DurationNode->FontSize = (byte) p.Config.FontSize;
             ushort outWidth = 0;
             ushort outHeight = 0;
             DurationNode->GetTextDrawSize(&outWidth, &outHeight);
-            DurationNode->AtkResNode.SetWidth((ushort)(outWidth + 2 * _plugin.Config.DurationPadding));
-            DurationNode->AtkResNode.SetHeight((ushort)(outHeight + 2 * _plugin.Config.DurationPadding));
+            DurationNode->AtkResNode.SetWidth((ushort)(outWidth + 2 * p.Config.DurationPadding));
+            DurationNode->AtkResNode.SetHeight((ushort)(outHeight + 2 * p.Config.DurationPadding));
 
-            var iconHeight = (ushort)(_plugin.Config.IconY + _plugin.Config.IconHeight);
-            var durationHeight = (ushort)(_plugin.Config.DurationY + DurationNode->AtkResNode.Height);
+            var iconHeight = (ushort)(p.Config.IconY + p.Config.IconHeight);
+            var durationHeight = (ushort)(p.Config.DurationY + DurationNode->AtkResNode.Height);
 
             RootNode->SetHeight(durationHeight > iconHeight ? durationHeight : iconHeight);
-            RootNode->SetWidth((ushort)(DurationNode->AtkResNode.Width > _plugin.Config.IconWidth ? DurationNode->AtkResNode.Width : _plugin.Config.IconWidth));
+            RootNode->SetWidth((ushort)(DurationNode->AtkResNode.Width > p.Config.IconWidth ? DurationNode->AtkResNode.Width : p.Config.IconWidth));
 
-            DurationNode->TextColor.R = (byte)(_plugin.Config.DurationTextColor.X * 255);
-            DurationNode->TextColor.G = (byte)(_plugin.Config.DurationTextColor.Y * 255);
-            DurationNode->TextColor.B = (byte)(_plugin.Config.DurationTextColor.Z * 255);
-            DurationNode->TextColor.A = (byte)(_plugin.Config.DurationTextColor.W * 255);
+            DurationNode->TextColor.R = (byte)(p.Config.DurationTextColor.X * 255);
+            DurationNode->TextColor.G = (byte)(p.Config.DurationTextColor.Y * 255);
+            DurationNode->TextColor.B = (byte)(p.Config.DurationTextColor.Z * 255);
+            DurationNode->TextColor.A = (byte)(p.Config.DurationTextColor.W * 255);
 
-            DurationNode->EdgeColor.R = (byte)(_plugin.Config.DurationEdgeColor.X * 255);
-            DurationNode->EdgeColor.G = (byte)(_plugin.Config.DurationEdgeColor.Y * 255);
-            DurationNode->EdgeColor.B = (byte)(_plugin.Config.DurationEdgeColor.Z * 255);
-            DurationNode->EdgeColor.A = (byte)(_plugin.Config.DurationEdgeColor.W * 255);
+            DurationNode->EdgeColor.R = (byte)(p.Config.DurationEdgeColor.X * 255);
+            DurationNode->EdgeColor.G = (byte)(p.Config.DurationEdgeColor.Y * 255);
+            DurationNode->EdgeColor.B = (byte)(p.Config.DurationEdgeColor.Z * 255);
+            DurationNode->EdgeColor.A = (byte)(p.Config.DurationEdgeColor.W * 255);
         }
 
         public bool Built() => RootNode != null && IconNode != null && DurationNode != null;
@@ -149,7 +142,7 @@ namespace EnemyListDebuffs.StatusNode
             var newResNode = (AtkResNode*)IMemorySpace.GetUISpace()->Malloc((ulong)sizeof(AtkResNode), 8);
             if (newResNode == null)
             {
-                _plugin.PluginLog.Debug("Failed to allocate memory for res node");
+                p.PluginLog.Debug("Failed to allocate memory for res node");
                 return null;
             }
             IMemorySpace.Memset(newResNode, 0, (ulong)sizeof(AtkResNode));
@@ -167,7 +160,7 @@ namespace EnemyListDebuffs.StatusNode
             var newImageNode = (AtkImageNode*)IMemorySpace.GetUISpace()->Malloc((ulong)sizeof(AtkImageNode), 8);
             if (newImageNode == null)
             {
-                _plugin.PluginLog.Debug("Failed to allocate memory for image node");
+                p.PluginLog.Debug("Failed to allocate memory for image node");
                 return null;
             }
             IMemorySpace.Memset(newImageNode, 0, (ulong)sizeof(AtkImageNode));
@@ -183,7 +176,7 @@ namespace EnemyListDebuffs.StatusNode
             var partsList = (AtkUldPartsList*)IMemorySpace.GetUISpace()->Malloc((ulong)sizeof(AtkUldPartsList), 8);
             if (partsList == null)
             {
-                _plugin.PluginLog.Debug("Failed to allocate memory for parts list");
+                p.PluginLog.Debug("Failed to allocate memory for parts list");
                 newImageNode->AtkResNode.Destroy(true);
                 return null;
             }
@@ -194,7 +187,7 @@ namespace EnemyListDebuffs.StatusNode
             var part = (AtkUldPart*)IMemorySpace.GetUISpace()->Malloc((ulong)sizeof(AtkUldPart), 8);
             if (part == null)
             {
-                _plugin.PluginLog.Debug("Failed to allocate memory for part");
+                p.PluginLog.Debug("Failed to allocate memory for part");
                 IMemorySpace.Free(partsList, (ulong)sizeof(AtkUldPartsList));
                 newImageNode->AtkResNode.Destroy(true);
             }
@@ -209,7 +202,7 @@ namespace EnemyListDebuffs.StatusNode
             var asset = (AtkUldAsset*)IMemorySpace.GetUISpace()->Malloc((ulong)sizeof(AtkUldAsset), 8);
             if (asset == null)
             {
-                _plugin.PluginLog.Debug("Failed to allocate memory for asset");
+                p.PluginLog.Debug("Failed to allocate memory for asset");
                 IMemorySpace.Free(part, (ulong)sizeof(AtkUldPart));
                 IMemorySpace.Free(partsList, (ulong)sizeof(AtkUldPartsList));
                 newImageNode->AtkResNode.Destroy(true);
@@ -232,7 +225,7 @@ namespace EnemyListDebuffs.StatusNode
             var newTextNode = (AtkTextNode*)IMemorySpace.GetUISpace()->Malloc((ulong)sizeof(AtkTextNode), 8);
             if (newTextNode == null)
             {
-                _plugin.PluginLog.Debug("Failed to allocate memory for text node");
+                p.PluginLog.Debug("Failed to allocate memory for text node");
                 return null;
             }
             IMemorySpace.Memset(newTextNode, 0, (ulong)sizeof(AtkTextNode));
