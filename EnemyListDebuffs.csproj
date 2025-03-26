@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Dalamud.NET.SDK/12.0.1">
   <PropertyGroup>
     <PackageId>EnemyListDebuffs</PackageId>
-    <Version>1.11.0.0</Version>
+    <Version>1.12.0.0</Version>
     <Authors>Felys,aers</Authors>
     <Company>-</Company>
     <Description>Dalamud plugin that shows debuffs on the Enemy List.</Description>
@@ -16,7 +16,7 @@
     <RootNamespace>EnemyListDebuffs</RootNamespace>
     <AssemblyName>EnemyListDebuffs</AssemblyName>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net9.0-windows</TargetFramework>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -45,38 +45,6 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-
-  <PropertyGroup>
-    <DalamudLibPath>$(AppData)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
-    <ClientStructsLibPath>E:\xiv-dev\FFXIVClientStructs\bin\$(Configuration)\</ClientStructsLibPath>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="DalamudPackager" Version="11.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Dalamud">
-      <HintPath>$(DalamudLibPath)Dalamud.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ImGui.NET">
-      <HintPath>$(DalamudLibPath)ImGui.NET.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Lumina">
-      <HintPath>$(DalamudLibPath)Lumina.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Lumina.Excel">
-      <HintPath>$(DalamudLibPath)Lumina.Excel.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="FFXIVClientStructs">
-      <HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
 
   <ItemGroup>
     <None Update="images\**">

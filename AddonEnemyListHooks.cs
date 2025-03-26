@@ -6,7 +6,6 @@ using Dalamud.Hooking;
 using Dalamud.Memory;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
@@ -14,7 +13,7 @@ namespace EnemyListDebuffs
 {
     public unsafe class AddonEnemyListHooks : IDisposable
     {
-        private readonly int _drawVtblOffset = 43 * IntPtr.Size;
+        private readonly int _drawVtblOffset = 44 * IntPtr.Size;
         private readonly EnemyListDebuffsPlugin _plugin;
 
         private readonly Stopwatch _timer;
