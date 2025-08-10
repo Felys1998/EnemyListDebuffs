@@ -131,7 +131,7 @@ namespace EnemyListDebuffs
                         {
                             Status status = statusArray[j];
                             if (status.StatusId == 0) continue;
-                            if (status.SourceId != localPlayerId) continue;
+                            if (status.SourceObject.ObjectId != localPlayerId) continue;
 
                             _plugin.StatusNodeManager.SetStatus(i, count, status.StatusId, (int)status.RemainingTime);
                             count++;
