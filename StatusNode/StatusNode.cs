@@ -240,8 +240,7 @@ namespace EnemyListDebuffs.StatusNode
             newTextNode->LineSpacing = 12;
             newTextNode->AlignmentFontType = 4;
             newTextNode->FontSize = 12;
-            newTextNode->TextFlags = (byte)(TextFlags.AutoAdjustNodeSize | TextFlags.Edge);
-            newTextNode->TextFlags2 = 0;
+            newTextNode->TextFlags = (TextFlags.AutoAdjustNodeSize | TextFlags.Edge);
 
             newTextNode->SetNumber(20);
 
